@@ -35,6 +35,12 @@ class TemplateTests(unittest.TestCase):
         self.assertTrue(all("PyDevices/pydevices/v0.1.0/" in url for url in urls))
         self.assertIn("./boarddev.py", config["files"].values())
 
+    def test_first_party_template_is_pyodide_only(self):
+        for page in (ROOT / "index.html", ROOT / "pwa" / "index.html"):
+            source = page.read_text(encoding="utf-8")
+            self.assertIn('script type="py"', source)
+            self.assertNotIn('type="mpy"', source)
+
 
 if __name__ == "__main__":
     unittest.main()

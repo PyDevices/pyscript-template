@@ -49,7 +49,7 @@ app.run()
 
 ## How It Works
 
-1. **HTML5 Canvas Backend**: `board_config.display_drv` binds to the `<canvas>` element in `index.html` via PyDevices' `WasmDisplay` / `CanvasDisplay` backend.
+1. **HTML5 Canvas Backend**: `board_config.display_drv` binds to the `<canvas>` element through the supported PyScript/Pyodide `PSDisplay` backend. This template is intentionally Pyodide-only; direct MicroPython WebAssembly applications use the Gallery host instead.
 2. **Browser Event Loop**: `app.run()` integrates cooperatively with the browser's native JavaScript event loop to dispatch pointer/touch events.
 3. **Automated PWA Caching**: The included GitHub Actions workflow and service worker cache the PyScript interpreter and application shell so users can install and run the app offline on desktop or mobile browsers.
 
@@ -81,7 +81,6 @@ Then open <http://localhost:8000>. Do not open `index.html` directly from the fi
 python3 -m unittest discover -s tests -v
 ```
 
-The template uses the `py` interpreter (Pyodide) for the broadest pip-wheel path. The same PyDevices source packages remain 100% portable to MicroPython, CircuitPython, and CPython desktop; see [pydevices-examples](https://github.com/PyDevices/pydevices-examples) for complete cross-interpreter applications and the full gallery.
+The template uses only the `py` interpreter (Pyodide) for the broadest pip-wheel path. The same PyDevices source packages remain portable to MicroPython, CircuitPython, and CPython desktop; use the [direct MicroPython WebAssembly Gallery](https://pydevices.github.io/pydevices-examples/gallery/) for the first-party direct host and complete cross-interpreter examples.
 
 MIT licensed. See `LICENSE`.
-
