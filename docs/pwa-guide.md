@@ -211,7 +211,7 @@ Use when the installed app should **always** launch the same demo, including que
 
 Provide at least **192×192** and **512×512** PNG files. Maskable icons (safe zone in the center) improve Android adaptive icons.
 
-You can adapt the [PyDevices logo SVG](https://github.com/PyDevices/pydevices-examples/blob/main/web/vendor/pydevices-chrome/logo.svg) or export PNGs from any design tool. The gallery icons live at `.site/pyscript/icon-192.png` and `.site/pyscript/icon-512.png`.
+You can adapt the [PyDevices logo SVG](https://pydevices.github.io/assets/img/logo.svg) or export PNGs from any design tool. The gallery icons live at `.site/pyscript/icon-192.png` and `.site/pyscript/icon-512.png`.
 
 ---
 
