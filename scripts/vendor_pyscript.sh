@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PYSCRIPT_VERSION="${PYSCRIPT_VERSION:-2026.7.2}"
+PYSCRIPT_VERSION="${PYSCRIPT_VERSION:-2026.7.3}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DEST="$ROOT/vendor/pyscript"
 ARCHIVE="$(mktemp)"
