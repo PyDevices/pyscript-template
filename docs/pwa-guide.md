@@ -100,7 +100,7 @@ pyscript-template/
 
 ```javascript
 const VERSION = '__DEPLOY_VERSION__';
-const CACHE_NAME = 'pyscript-template-' + (VERSION === '__DEPLOY_VERSION__' ? 'dev' : VERSION);
+const CACHE_NAME = 'pyscript-template-' + (VERSION.indexOf('DEPLOY_VERSION') !== -1 ? 'dev' : VERSION);
 const SHELL = [
   './',
   './index.html',
