@@ -16,6 +16,15 @@ concurrency:
 
 jobs:
   build:
+    # The template itself has no Pages site, and should not: it exists to be
+    # copied, not published. Without this guard every push here failed with
+    # "Get Pages site failed. Please verify that the repository has Pages
+    # enabled", which is not a fault a template can fix about itself.
+    #
+    # Repositories generated from the template have a different name, so the
+    # deploy runs there exactly as intended -- which is the whole point of
+    # shipping this file.
+    if: github.repository != 'PyDevices/pyscript-template'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
