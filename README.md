@@ -65,6 +65,7 @@ app.run()
 
 ## Documentation
 
+- [Newcomer's guide](docs/newcomers.md) — how the template becomes a browser app, and which generated/deployed boundaries to preserve.
 - [Make your PyScript app a PWA](docs/pwa-guide.md) — host/install matrix,
   manifest, service worker, cross-origin isolation, deployment, and offline
   caching. The template already ships everything that guide describes.
