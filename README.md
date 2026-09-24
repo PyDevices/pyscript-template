@@ -73,7 +73,9 @@ app.run()
 ## Customize
 
 - Edit `main.py` for application behavior.
-- Edit `pyscript.json` to add PyDevices source files or Pyodide packages.
+- Edit `pyscript.json` to add PyDevices source files or Pyodide packages. For
+  an app that makes sound or uses LVGL, such as piano or the drum machine from
+  pydevices-examples, see [Bringing in a bigger app](docs/packages.md).
 - Change the app name, colors, and icons in `index.html`, `manifest.json`, and `style.css`.
 - Change `PYSCRIPT_VERSION` in `scripts/vendor_pyscript.sh` when you choose to
   update the browser interpreter. Check the
