@@ -9,7 +9,7 @@ Pages with **GitHub Actions** as the source. The included workflow
 (the app lives there, not in a subdirectory) to GitHub Pages on every push to
 `main`, and the service worker caches both the application shell and the
 pinned PyScript interpreter for offline launches after the first successful
-visit. The template also pins PyDevices source files to release `v0.3.7`, so
+visit. The template also pins PyDevices source files to release `v0.5.4`, so
 a new app does not silently change when the product's default branch
 advances.
 
