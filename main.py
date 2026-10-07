@@ -6,9 +6,10 @@ Interactive touch/paint demo built on the PyDevices Board Contract
 
 from boarddev import env_set
 
-# Chrome won't make an installed app's window narrower than about 500 pixels,
-# so the display starts that wide and fills the window. board_config reads it.
+# The display is 500x500: Chrome won't make an installed app's window narrower
+# than about 500 pixels, so this size fills it. board_config reads these.
 env_set("PYDEVICES_WIDTH", 500)
+env_set("PYDEVICES_HEIGHT", 500)
 
 import board_config
 import appdev

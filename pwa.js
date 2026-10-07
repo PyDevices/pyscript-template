@@ -72,7 +72,7 @@
       requestAnimationFrame(function () { pending = false; fitWindow(); });
     };
     // PSDisplay writes the canvas's width and height when board_config
-    // creates the display; that is the size to fit, not the 320x480 the
+    // creates the display; that is the size to fit, not the size the
     // page starts with.
     if (canvas && window.MutationObserver) {
       new MutationObserver(schedule).observe(canvas, {attributes: true, attributeFilter: ['width', 'height']});
