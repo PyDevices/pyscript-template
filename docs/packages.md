@@ -80,9 +80,9 @@ ordinary wheel works):
 - **Canvas size.** The template's `main.py` sets the display to 500×500
   with `env_set("PYDEVICES_WIDTH", ...)` and `PYDEVICES_HEIGHT` before it
   imports `board_config`. Set them to your app's size (piano is 480×320, the
-  drum machine 720×480). The canvas shows at that size and shrinks only when
-  the page is narrower. An installed app's window is never narrower than
-  about 500 pixels in Chrome, so a narrower display leaves margins there.
+  drum machine 720×480); the canvas takes whatever size the display is. The
+  template uses 500 because Chrome won't make an installed app's window any
+  narrower.
 - **Name and icon.** `manifest.json` (`name`, `short_name`), the `<title>` and
   heading in `index.html`, and the two icons.
 - **Sound.** Browsers start audio only after a click or tap on the page, so
