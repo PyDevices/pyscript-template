@@ -1,8 +1,8 @@
 # Newcomer's guide to the PyDevices PyScript template
 
 This repository is a GitHub template for an installable browser application,
-not a shared PyDevices library and not a site to deploy as-is. Start by using
-the template to create your own repository, then make that repository's
+not a shared PyDevices library. Start by using the template to create your own
+repository, then make that repository's
 `main.py`, application name, icons, and styling yours.
 
 The template runs Python in the browser through PyScript/Pyodide and renders
@@ -14,7 +14,7 @@ an application architecture on the copied project.
 ## A mental model
 
 ```text
-GitHub Pages HTTP origin
+http://localhost:8000 (python3 -m http.server)
         |
         v
 index.html
@@ -35,26 +35,26 @@ main.py
 sw.js caches the shell and later GET responses for offline reuse
 ```
 
-The application must be served over HTTP(S). Opening `index.html` directly
-from the filesystem does not provide the origin that PyScript and service
-workers require.
+The application must be served over HTTP. Opening `index.html` directly
+from the filesystem does not provide the origin that PyScript needs, and the
+service worker only runs on `http://localhost` or `https://`. The root
+README's [Run it locally](../README.md#run-it-locally) has the commands.
 
 ## Repository map
 
 | Path | Purpose |
 |---|---|
-| `index.html` | Application shell: canvas, status text, install button, PyScript loader, and the Python entrypoint declaration. |
+| `index.html` | Application shell: canvas, status text, PyScript loader, and the Python entrypoint declaration. |
 | `main.py` | Starter Python application. It constructs `appdev.App(board_config)`, paints the demo, and handles pointer events. |
 | `pyscript.json` | Exact remote-file map for the PyDevices modules available to PyScript. |
 | `manifest.json` | Browser PWA identity: names, icons, scope, and display mode. |
-| `pwa.js` | Registers the service worker and manages the browser's install prompt. |
+| `pwa.js` | Registers the service worker, sizes an installed app's window to the display, and shows the note that says how to install. |
 | `sw.js` | Caches the app shell and runtime, then caches successful GET responses for offline reuse. |
 | `style.css` | Shell and canvas presentation. |
 | `scripts/vendor_pyscript.sh` | Downloads the pinned offline PyScript release into generated `vendor/pyscript/`. |
-| `.github/workflows/deploy.yml` | Template-user Pages deployment: vendors PyScript, stamps the cache version, and publishes the repository root. |
 | `.github/workflows/tests.yml` | Vendors PyScript and runs the template's unit tests. |
 | `tests/test_template.py` | Checks JSON, source pins, local shell assets, and the Pyodide-only contract. |
-| `docs/pwa-guide.md` | Detailed PWA host, cache, deployment, and troubleshooting reference. |
+| `docs/pwa-guide.md` | Where the app installs, the service worker's cache, the app window, and edits that don't show. |
 
 ## Follow the starter application
 
@@ -68,10 +68,9 @@ workers require.
    `appdev.App(board_config)` supplies event dispatch and refresh coordination.
 4. The demo draws its colour strip, converts pointer events into a selected
    colour or paint stroke, and calls `display_drv.show()` to present updates.
-5. `pwa.js` registers `sw.js`. On a deployed copy, the workflow substitutes
-   the commit SHA into the cache name so a new deployment replaces stale shell
-   assets. After an initial online visit, cached shell/runtime and fetched
-   assets enable offline launches.
+5. `pwa.js` registers `sw.js`. After an initial online visit, the cached
+   shell, runtime and fetched assets enable offline launches. The cache is
+   named after `VERSION` in `sw.js`; changing it replaces the old cache.
 
 The template is Pyodide-only: its HTML uses a `type="py"` script. It is not a
 direct MicroPython WebAssembly host; use the PyDevices examples Gallery when
@@ -79,22 +78,22 @@ that is the target runtime.
 
 ## Boundaries worth preserving
 
-- Change the copied application's `main.py`, titles, icons, manifest, and CSS;
-  do not try to make this upstream template repository its own deployed app.
-  Its Pages workflow intentionally skips `PyDevices/pyscript-template`.
+- Change the copied application's `main.py`, titles, icons, manifest, and CSS.
 - Keep `pyscript.json` source URLs pinned. Updating the PyDevices release is a
   deliberate dependency change: update the complete file map and verify the
   copied application, rather than mixing versions casually.
 - `vendor/pyscript/` is generated and ignored by Git. Never hand-edit it;
   change the pinned version in `scripts/vendor_pyscript.sh` and regenerate it.
-- The service worker cache version is stamped only during deployment. While
-  developing locally, hard-refresh or unregister the service worker when a
-  browser appears to serve an old application shell.
-- Keep the app at the repository root. The deploy workflow publishes that root
-  and its service-worker paths assume it.
-- Browser installation and offline behavior need a deployed HTTP(S) site and
-  at least one successful online load. They cannot be proven by opening a file
-  from disk.
+- The service worker serves cached files first. While developing, hard-reload
+  (Ctrl+Shift+R) or tick DevTools' **Bypass for network** when a browser
+  appears to serve an old file, and change `VERSION` in `sw.js` when you want
+  browsers that already have the app to pick up a change. See
+  [Edits that don't show](pwa-guide.md#edits-that-dont-show).
+- Keep the app at the repository root. The service worker's scope and its
+  cached paths assume it.
+- Browser installation and offline behavior need `http://localhost` or an
+  `https://` origin and at least one successful online load. They cannot be
+  proven by opening a file from disk.
 
 ## Start a safe application change
 
@@ -107,8 +106,8 @@ For normal work in a repository created from this template:
    `pyscript.json`.
 4. Run the local HTTP preview described in the root README; do not use a
    `file:` URL.
-5. Enable GitHub Pages with GitHub Actions in the copied repository, push to
-   `main`, and verify install/offline behavior on the deployed site.
+5. Install it from Chrome or Edge on localhost and check that its window fits
+   the display and that it launches with the server stopped.
 
 The template tests can be run with:
 
@@ -125,7 +124,7 @@ browser test of pointer input, installation, or offline caching.
 - Read `main.py` and `pyscript.json` together for the Python application
   boundary and pinned dependency set.
 - Read [the PWA guide](pwa-guide.md) before changing service-worker behavior,
-  deployment, hosting, or installation instructions.
+  caching, the app window, or installation instructions.
 - Read `tests/test_template.py` before moving a shell file or adding a generated
   asset to the cache list.
 - For display/event APIs, follow the linked PyDevices source release rather
