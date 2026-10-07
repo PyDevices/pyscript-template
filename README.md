@@ -70,6 +70,8 @@ app.run()
   manifest, service worker, cross-origin isolation, deployment, and offline
   caching. The template already ships everything that guide describes.
 
+What's planned next is in [ROADMAP.md](ROADMAP.md).
+
 ## Customize
 
 - Edit `main.py` for application behavior.
