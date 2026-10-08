@@ -45,7 +45,7 @@ class TemplateTests(unittest.TestCase):
         config = json.loads((ROOT / "pyscript.json").read_text(encoding="utf-8"))
         urls = tuple(config["files"])
         self.assertTrue(urls)
-        self.assertTrue(all("PyDevices/pydevices/v0.5.4/" in url for url in urls))
+        self.assertTrue(all("PyDevices/pydevices/v0.7.0/" in url for url in urls))
         self.assertIn("./boarddev.py", config["files"].values())
         self.assertIn("./appdev/__init__.py", config["files"].values())
         # psdisplay's board_peripherals imports audiodev at module level

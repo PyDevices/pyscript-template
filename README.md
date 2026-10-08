@@ -7,7 +7,7 @@ Use this repository as a GitHub template, edit `main.py`, and run it on your
 own machine with Python's built-in web server ([below](#run-it-locally)). The
 service worker caches the application shell and the pinned PyScript
 interpreter, so after one visit the app launches offline too. The template
-pins PyDevices source files to release `v0.5.4`, so a new app does not
+pins PyDevices source files to release `v0.7.0`, so a new app does not
 silently change when the product's default branch advances.
 
 ## Starter Example: Interactive Touch / Paint
@@ -61,6 +61,8 @@ app.run()
 - [Make your PyScript app a PWA](docs/pwa-guide.md) — where it installs, the
   manifest, the service worker, the app window, and edits that don't show.
   The template already ships everything that guide describes.
+
+What's planned next is in [ROADMAP.md](ROADMAP.md).
 
 ## Customize
 
