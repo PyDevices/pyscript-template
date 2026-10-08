@@ -1,13 +1,10 @@
-// VERSION is replaced with the deploy commit SHA by .github/workflows/deploy.yml.
-// Locally it stays 'dev', which still busts the cache on every vendor/edit
-// commit made to this file; for iterative local testing, hard-refresh
-// (or unregister the service worker) instead of relying on this value to change.
-const VERSION = '__DEPLOY_VERSION__';
-// Deliberately not compared against the literal placeholder string above:
-// the deploy workflow's sed replaces every occurrence of that literal, which
-// would also rewrite this check and always report "deployed". Substring
-// match on the un-prefixed word survives the replacement instead.
-const CACHE_NAME = 'pyscript-template-' + (VERSION.indexOf('DEPLOY_VERSION') !== -1 ? 'dev' : VERSION);
+// Every file this worker serves comes from the cache once it has been
+// fetched, so a browser that has already visited keeps the old copies. Change
+// VERSION whenever you change a file: the next visit installs a worker with a
+// new cache and the old one is deleted. While you are editing, a hard reload
+// skips the worker instead (see docs/pwa-guide.md, "Edits that don't show").
+const VERSION = '1';
+const CACHE_NAME = 'pyscript-template-' + VERSION;
 const SHELL = [
   './',
   './index.html',

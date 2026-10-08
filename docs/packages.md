@@ -77,13 +77,12 @@ ordinary wheel works):
 
 ## Things you will want to change
 
-- **Canvas size.** `style.css` draws the canvas at most 320 CSS pixels wide.
-  The app sets the canvas's real size; the CSS only scales it. Piano (480×320)
-  and the drum machine (720×480) are easier to use wider: raise the `320px`
-  in the `canvas` rule to the app's width. That also sidesteps a pydevices
-  0.5.2 bug where a mouse click on a shrunken canvas lands in the wrong place
-  ([pydevices#69](https://github.com/PyDevices/pydevices/pull/69); touch is
-  not affected).
+- **Canvas size.** The template's `main.py` sets the display to 500×500
+  with `env_set("PYDEVICES_WIDTH", ...)` and `PYDEVICES_HEIGHT` before it
+  imports `board_config`. Set them to your app's size (piano is 480×320, the
+  drum machine 720×480); the canvas takes whatever size the display is. The
+  template uses 500 because Chrome won't make an installed app's window any
+  narrower.
 - **Name and icon.** `manifest.json` (`name`, `short_name`), the `<title>` and
   heading in `index.html`, and the two icons.
 - **Sound.** Browsers start audio only after a click or tap on the page, so

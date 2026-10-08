@@ -57,6 +57,17 @@ class TemplateTests(unittest.TestCase):
         self.assertIn('script type="py"', source)
         self.assertNotIn('type="mpy"', source)
 
+    def test_install_is_left_to_the_browser(self):
+        """No install button of our own; pwa.js points at the browser's UI
+        and must not swallow the browser's own prompt."""
+        html = (ROOT / "index.html").read_text(encoding="utf-8")
+        pwa = (ROOT / "pwa.js").read_text(encoding="utf-8")
+        self.assertNotIn('id="install"', html)
+        self.assertNotIn("<button", html)
+        self.assertIn("beforeinstallprompt", pwa)
+        self.assertNotIn(".prompt()", pwa)
+        self.assertNotIn("preventDefault()", pwa.replace("Not preventDefault()", ""))
+
     def test_referenced_local_assets_exist_after_vendoring(self):
         """Every local asset index.html/sw.js reference must exist somewhere
         in the tree, either checked in or produced by
