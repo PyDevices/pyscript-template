@@ -63,8 +63,9 @@ In the worker, `from js import ports` and hand `ports.audio` to
 `audiodev.worklet_audio` (pydevices): set `WorkletOutput(ports.audio).source`
 to a function that renders blocks, or use its `pcm_out(port=ports.audio)` like
 any other audio output. The worklet keeps about 32 ms queued at first and
-works down to about 16 ms when the machine keeps up, backing off after any
-dropout.
+works down to about 16 ms when the machine keeps up. After a dropout it
+queues more for a couple of seconds, then comes back down in one step once
+the workers keep up again; dropouts that keep coming hold it up longer.
 
 ## Web MIDI
 
