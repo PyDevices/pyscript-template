@@ -5,7 +5,8 @@
 // OffscreenCanvas to hand over. Python sees them as `js.ports.<name>` and
 // `js.display_canvas` (board_configs/workerdisplay reads the latter).
 // Pointer, wheel and key events the page relays go to
-// displaydev.workerdisplay once the app has imported it.
+// displaydev.workerdisplay once the app has imported it. Messages of type
+// "app" go to the Python function set as js.self.onPageMessage.
 
 import { loadPyodide } from "../vendor/pyscript/pyodide/pyodide.mjs";
 
@@ -70,5 +71,11 @@ self.onmessage = (e) => {
       .catch((err) => self.postMessage({ type: "error", error: String((err && err.stack) || err) }));
   } else if (msg.type === "input" || msg.type === "resize") {
     relayInput(msg);
+  } else if (msg.type === "app" && typeof self.onPageMessage === "function") {
+    // Anything else the page sends for the app: Python sets
+    // js.self.onPageMessage to receive it, and answers with
+    // js.self.postMessage({type: "app", ...}), which arrives in the page's
+    // handle.onmessage.
+    self.onPageMessage(msg);
   }
 };
