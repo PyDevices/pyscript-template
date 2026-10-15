@@ -8,3 +8,4 @@
   that don't show.
 
 Start with the [root README](../README.md) for the template itself.
+- [workers.md](workers.md): run your Python in Web Workers when the main thread has to stay free (Web MIDI, live audio)
