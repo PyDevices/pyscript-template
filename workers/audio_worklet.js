@@ -12,12 +12,15 @@
 //                                                     context frame k + offset
 //   worklet -> worker  {underrun: count}              underruns since the last one
 //
-// The queue adapts: it starts at `startFrames`, steps down 256 frames at a
-// time towards `minFrames` while every stream's low point stays above 384
-// frames for two seconds, and steps up 512 frames (to at most `maxFrames`)
-// on any underrun, then holds for ten seconds. The browser's audio thread
-// asks for audio about every 10 ms, so a queue much under 768 frames can't
-// keep up.
+// The queue adapts: it starts at `startFrames` and steps up 512 frames (to
+// at most `maxFrames`) on an underrun, once per quarter second however many
+// quanta run short, then holds for two seconds. After that it comes back
+// down quickly: whenever every stream's low point over two seconds leaves
+// 512 frames or more to spare above 384, the target drops by what was spare,
+// and the extra audio queued plays out within a few milliseconds. Near the
+// floor it steps down 256 frames at a time towards `minFrames` while the low
+// point stays above 384 for two seconds. The browser's audio thread asks for
+// audio about every 10 ms, so a queue much under 768 frames can't keep up.
 //
 // The node's own port (to the page) takes {type: "worker"} with a port per
 // stream, {type: "master", gain}, {type: "stats"}, and {type: "tap", on}
@@ -71,7 +74,12 @@ class PythonWorkerOutput extends AudioWorkletProcessor {
     this.underruns = 0;
     this.windowLow = Infinity;
     this.windowStart = 0;
+    this.fastLow = Infinity;
+    this.fastStart = 0;
     this.holdUntil = 0;
+    this.raisedAt = -Infinity;
+    this.lastShort = -Infinity;
+    this.hold = 2 * sampleRate;
     this.low = Infinity;
     this.peak = 0;
     this.tap = null;
@@ -113,11 +121,33 @@ class PythonWorkerOutput extends AudioWorkletProcessor {
   adapt(underran) {
     const now = currentFrame;
     if (underran) {
-      this.target = Math.min(this.maxFrames, this.target + 512);
-      this.holdUntil = now + 10 * sampleRate;
-      this.windowStart = now;
-      this.windowLow = Infinity;
+      // Short quanta less than a second apart are one stall. After a stall,
+      // hold two seconds; when a new one comes within ten seconds of the
+      // last, the machine is struggling: hold ten.
+      const quiet = now - this.lastShort;
+      if (quiet > sampleRate) this.hold = (quiet < 10 * sampleRate ? 10 : 2) * sampleRate;
+      this.lastShort = now;
+      // Within a stall, raise at most every quarter second: a stall of a few
+      // milliseconds would otherwise push the target straight to the maximum.
+      if (now - this.raisedAt >= sampleRate / 4) {
+        this.target = Math.min(this.maxFrames, this.target + 512);
+        this.raisedAt = now;
+      }
+      this.holdUntil = now + this.hold;
+      this.windowStart = this.fastStart = now;
+      this.windowLow = this.fastLow = Infinity;
       return;
+    }
+    if (now - this.fastStart >= 2 * sampleRate) {
+      // Plenty to spare: drop by what was spare, all at once.
+      const spare = Math.floor((this.fastLow - 384) / BLOCK) * BLOCK;
+      if (now >= this.holdUntil && spare >= 2 * BLOCK && this.target > this.minFrames) {
+        this.target = Math.max(this.minFrames, this.target - spare);
+        this.windowStart = now;
+        this.windowLow = Infinity;
+      }
+      this.fastStart = now;
+      this.fastLow = Infinity;
     }
     if (now - this.windowStart >= 2 * sampleRate) {
       if (now >= this.holdUntil && this.windowLow > 384 && this.target > this.minFrames) {
@@ -200,6 +230,7 @@ class PythonWorkerOutput extends AudioWorkletProcessor {
     if (underran) this.underruns++;
     for (const s of this.streams) {
       if (s.started && s.queued < this.windowLow) this.windowLow = s.queued;
+      if (s.started && s.queued < this.fastLow) this.fastLow = s.queued;
       if (s.started && s.queued < this.low) this.low = s.queued;
     }
     if (this.streams.some((s) => s.started)) this.adapt(underran);

@@ -1,5 +1,6 @@
 import json
 import re
+import shutil
 import subprocess
 from pathlib import Path
 import unittest
@@ -17,6 +18,13 @@ def _local_asset_paths_from_html(source):
             continue
         paths.add(ref.split("?")[0].split("#")[0])
     return paths
+
+
+def _worklet_sim(*args):
+    """Run tests/worklet_sim.mjs; one dict per tenth of a second."""
+    out = subprocess.run(["node", str(ROOT / "tests" / "worklet_sim.mjs"), *map(str, args)],
+                         capture_output=True, text=True, check=True, timeout=120).stdout
+    return [json.loads(line) for line in out.splitlines()]
 
 
 class TemplateTests(unittest.TestCase):
@@ -108,6 +116,26 @@ class TemplateTests(unittest.TestCase):
                 missing.append(ref)
 
         self.assertFalse(missing, f"referenced assets missing from tree: {missing}")
+
+    @unittest.skipUnless(shutil.which("node"), "needs node")
+    def test_worklet_queue_recovers_after_a_stall(self):
+        # A worker stalls for 0.3 s at 3 s: the queue rises once, not to the
+        # maximum, and is back near its floor a few seconds later.
+        rows = _worklet_sim(3, 0.3, 15)
+        peak = max(r["target"] for r in rows if r["t"] > 3)
+        back = next((r["t"] for r in rows if r["t"] > 3.3 and r["target"] <= 1024), None)
+        self.assertLessEqual(peak, 2048, rows)
+        self.assertIsNotNone(back)
+        self.assertLess(back - 3.3, 3.0)
+
+    @unittest.skipUnless(shutil.which("node"), "needs node")
+    def test_worklet_queue_holds_up_when_a_worker_keeps_running_late(self):
+        # Replies late at random for a minute: the queue grows and stays up,
+        # and dropouts stay few.
+        rows = _worklet_sim(100, 0, 60, 0.3)
+        late = [r["target"] for r in rows if r["t"] >= 10]
+        self.assertGreater(sum(late) / len(late), 1536)
+        self.assertLess(rows[-1]["underruns"], 40)
 
 
 if __name__ == "__main__":
