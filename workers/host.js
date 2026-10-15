@@ -45,7 +45,8 @@ export function startWorker({ name = "python", main, packages = [], files = {}, 
     offscreen = canvas.transferControlToOffscreen();
     transfer.push(offscreen);
   }
-  const handle = { worker, name, loaded: null, ready: null, error: null };
+  const handle = { worker, name, loaded: null, ready: null, error: null, onmessage: null,
+    send: (msg, transfer) => worker.postMessage({ type: "app", ...msg }, transfer || []) };
   handle.loaded = new Promise((resolveLoaded) => {
     handle.ready = new Promise((resolve, reject) => {
       worker.onmessage = (e) => {
@@ -53,7 +54,7 @@ export function startWorker({ name = "python", main, packages = [], files = {}, 
         if (m.type === "loaded") resolveLoaded(m);
         else if (m.type === "ready") resolve(m);
         else if (m.type === "error") { handle.error = m.error; console.error(`[${name}] ${m.error}`); reject(new Error(m.error)); }
-        else if (handle.onmessage) handle.onmessage(m);
+        else if (handle.onmessage) handle.onmessage(m);   // e.g. {type: "app", ...} from Python
       };
       worker.onerror = (e) => { handle.error = e.message; reject(new Error(e.message || "worker failed to load")); };
     });
@@ -97,8 +98,10 @@ export function relayInput(canvas, worker) {
 
 // -- Audio ----------------------------------------------------------------------
 
-// An AudioContext and the worklet that plays a worker's blocks. Hand
-// `workerPort` to the audio worker (ports: {audio: ...}).
+// An AudioContext and the worklet that plays workers' blocks. Hand
+// `workerPort` to the audio worker (ports: {audio: ...}); for more workers
+// rendering in parallel, give each its own `addStream()` port and the worklet
+// sums them.
 export async function createAudio({ channels = 1, sampleRate = 48000, minFrames = 768, startFrames = 1536, maxFrames = 4096 } = {}) {
   const context = new AudioContext({ latencyHint: "interactive", sampleRate });
   await context.audioWorklet.addModule(new URL("./audio_worklet.js", import.meta.url));
@@ -107,8 +110,11 @@ export async function createAudio({ channels = 1, sampleRate = 48000, minFrames 
     processorOptions: { channels, minFrames, startFrames, maxFrames },
   });
   node.connect(context.destination);
-  const channel = new MessageChannel();
-  node.port.postMessage({ type: "worker" }, [channel.port2]);
+  const addStream = () => {
+    const channel = new MessageChannel();
+    node.port.postMessage({ type: "worker" }, [channel.port2]);
+    return channel.port1;
+  };
   let statsWaiter = null;
   const tapChunks = [];
   node.port.onmessage = (e) => {
@@ -116,7 +122,8 @@ export async function createAudio({ channels = 1, sampleRate = 48000, minFrames 
     else if (e.data.type === "tap") tapChunks.push(e.data);
   };
   return {
-    context, node, workerPort: channel.port1, tapChunks,
+    context, node, workerPort: addStream(), addStream, tapChunks,
+    setGain: (gain) => node.port.postMessage({ type: "master", gain }),
     stats: () => new Promise((r) => { statsWaiter = r; node.port.postMessage({ type: "stats" }); }),
     tap: (on) => node.port.postMessage({ type: "tap", on }),
   };

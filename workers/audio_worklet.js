@@ -1,24 +1,59 @@
-// The AudioWorklet end of a Python worker's audio (audiodev.worklet_audio).
+// The AudioWorklet end of Python workers' audio (audiodev.worklet_audio).
 //
-// It plays 256-frame blocks of int16 PCM the worker sends and asks for more
-// over a MessagePort, keeping a queue of `target` frames:
+// One or more workers each send a stream of 256-frame int16 blocks (stereo
+// interleaved when channels is 2). The worklet sums the streams, applies the
+// master gain and a peak limiter, and plays the result. Several workers can
+// share the rendering of one app this way, each on its own core. Per stream,
+// over its MessagePort:
 //
 //   worklet -> worker  {need: blocks, asked: frame}   send that many blocks
 //   worker -> worklet  {pcm: Int16Array, asked}       (transferred, interleaved)
 //   worklet -> worker  {offset}                       rendered frame k plays at
 //                                                     context frame k + offset
-//   worklet -> worker  {underrun: count}           underruns since the last one
+//   worklet -> worker  {underrun: count}              underruns since the last one
 //
 // The queue adapts: it starts at `startFrames`, steps down 256 frames at a
-// time towards `minFrames` while its low point stays above 512 frames for two
-// seconds, and steps up 512 frames (to at most `maxFrames`) on any underrun,
-// then holds for ten seconds. The browser's audio thread asks for audio about
-// every 10 ms, so a queue much under 768 frames can't keep up.
+// time towards `minFrames` while every stream's low point stays above 384
+// frames for two seconds, and steps up 512 frames (to at most `maxFrames`)
+// on any underrun, then holds for ten seconds. The browser's audio thread
+// asks for audio about every 10 ms, so a queue much under 768 frames can't
+// keep up.
 //
-// The node's own port (to the page) answers {type: "stats"} and, when a test
-// asks with {type: "tap", on: true}, posts a copy of every frame played.
+// The node's own port (to the page) takes {type: "worker"} with a port per
+// stream, {type: "master", gain}, {type: "stats"}, and {type: "tap", on}
+// (a test copy of every frame played).
 
 const BLOCK = 256;
+
+class Stream {
+  constructor(port, owner, index) {
+    this.port = port;
+    this.index = index;
+    this.queue = [];
+    this.head = 0;
+    this.queued = 0;
+    this.requested = 0;
+    this.played = 0;
+    this.offset = null;
+    this.started = false;
+    this.underruns = 0;
+    this.renderMs = 0;
+    this.paused = false;
+    port.onmessage = (ev) => {
+      if (ev.data.pause !== undefined) {
+        this.paused = !!ev.data.pause;
+        if (!this.paused) { this.queue = []; this.head = 0; this.queued = 0; this.requested = 0; this.started = false; }
+        return;
+      }
+      const pcm = ev.data.pcm;
+      if (!pcm) return;
+      const frames = pcm.length / owner.channels;
+      this.queue.push(pcm);
+      this.queued += frames;
+      this.requested = Math.max(0, this.requested - frames);
+    };
+  }
+}
 
 class PythonWorkerOutput extends AudioWorkletProcessor {
   constructor(options) {
@@ -28,19 +63,17 @@ class PythonWorkerOutput extends AudioWorkletProcessor {
     this.minFrames = o.minFrames || 768;
     this.maxFrames = o.maxFrames || 4096;
     this.target = o.startFrames || 1536;
-    this.queue = [];
-    this.head = 0;            // sample index into queue[0]
-    this.queued = 0;          // frames queued
-    this.requested = 0;       // frames asked for, not yet here
-    this.played = 0;          // queued frames played so far
-    this.offset = null;
-    this.worker = null;
-    this.started = false;
+    this.streams = [];
+    this.gain = 1.0;
+    this.env = 0;             // limiter's peak follower
+    this.ceiling = 0.97;
+    this.release = Math.exp(-1 / (0.05 * sampleRate));
     this.underruns = 0;
     this.windowLow = Infinity;
     this.windowStart = 0;
     this.holdUntil = 0;
-    this.low = Infinity;      // low point since the last stats request
+    this.low = Infinity;
+    this.peak = 0;
     this.tap = null;
     this.tapAt = 0;
     this.tapStart = 0;
@@ -50,32 +83,30 @@ class PythonWorkerOutput extends AudioWorkletProcessor {
   onPage(e) {
     const m = e.data;
     if (m.type === "worker") {
-      this.worker = e.ports[0];
-      this.worker.onmessage = (ev) => {
-        const pcm = ev.data.pcm;
-        if (!pcm) return;
-        const frames = pcm.length / this.channels;
-        this.queue.push(pcm);
-        this.queued += frames;
-        this.requested = Math.max(0, this.requested - frames);
-      };
-      this.ask();
+      const s = new Stream(e.ports[0], this, this.streams.length);
+      this.streams.push(s);
+      this.ask(s);
+    } else if (m.type === "master") {
+      this.gain = m.gain;
     } else if (m.type === "stats") {
       this.port.postMessage({ type: "stats", underruns: this.underruns, target: this.target,
-        queued: this.queued, low: this.low, frame: currentFrame });
+        low: this.low, peak: this.peak, frame: currentFrame,
+        streams: this.streams.map((s) => ({ queued: s.queued, underruns: s.underruns, offset: s.offset })) });
       this.low = Infinity;
+      this.peak = 0;
     } else if (m.type === "tap") {
       this.tap = m.on ? new Float32Array(Math.floor(sampleRate / 2) * this.channels) : null;
       this.tapAt = 0;
     }
   }
 
-  ask() {
-    const short = this.target - this.queued - this.requested;
-    if (short > 0 && this.worker) {
+  ask(s) {
+    if (s.paused) return;
+    const short = this.target - s.queued - s.requested;
+    if (short > 0) {
       const blocks = Math.ceil(short / BLOCK);
-      this.requested += blocks * BLOCK;
-      this.worker.postMessage({ need: blocks, asked: currentFrame });
+      s.requested += blocks * BLOCK;
+      s.port.postMessage({ need: blocks, asked: currentFrame });
     }
   }
 
@@ -88,9 +119,8 @@ class PythonWorkerOutput extends AudioWorkletProcessor {
       this.windowLow = Infinity;
       return;
     }
-    if (this.queued < this.windowLow) this.windowLow = this.queued;
     if (now - this.windowStart >= 2 * sampleRate) {
-      if (now >= this.holdUntil && this.windowLow > 512 && this.target > this.minFrames) {
+      if (now >= this.holdUntil && this.windowLow > 384 && this.target > this.minFrames) {
         this.target = Math.max(this.minFrames, this.target - BLOCK);
       }
       this.windowStart = now;
@@ -98,45 +128,83 @@ class PythonWorkerOutput extends AudioWorkletProcessor {
     }
   }
 
-  process(inputs, outputs) {
-    const out = outputs[0];
+  // Add one stream's next `frames` frames into `out`; true if it ran short.
+  mix(s, out, frames, first) {
     const ch = this.channels;
-    const frames = out[0].length;
+    if (s.paused) {
+      if (first) for (let c = 0; c < out.length; c++) out[c].fill(0);
+      return false;
+    }
     let i = 0;
-    while (i < frames && this.queue.length) {
-      const blk = this.queue[0];
-      const n = Math.min(frames - i, (blk.length - this.head) / ch);
-      for (let k = 0; k < n; k++) {
-        for (let c = 0; c < ch; c++) out[c][i + k] = blk[this.head + k * ch + c] / 32768;
+    while (i < frames && s.queue.length) {
+      const blk = s.queue[0];
+      const n = Math.min(frames - i, (blk.length - s.head) / ch);
+      for (let c = 0; c < ch; c++) {
+        const o = out[c];
+        if (first) for (let k = 0; k < n; k++) o[i + k] = blk[s.head + k * ch + c] / 32768;
+        else for (let k = 0; k < n; k++) o[i + k] += blk[s.head + k * ch + c] / 32768;
       }
       i += n;
-      this.head += n * ch;
-      this.queued -= n;
-      if (this.head >= blk.length) { this.queue.shift(); this.head = 0; }
+      s.head += n * ch;
+      s.queued -= n;
+      if (s.head >= blk.length) { s.queue.shift(); s.head = 0; }
     }
-    let underran = false;
+    if (first && i < frames) for (let c = 0; c < out.length; c++) out[c].fill(0, i);
+    s.played += i;
+    let short = false;
     if (i < frames) {
-      for (let c = 0; c < out.length; c++) out[c].fill(0, i);
-      if (this.started) {
-        underran = true;
-        this.underruns++;
-        if (this.worker) this.worker.postMessage({ underrun: 1 });
+      if (s.started) {
+        short = true;
+        s.underruns++;
+        s.port.postMessage({ underrun: 1 });
       }
     } else {
-      this.started = true;
+      s.started = true;
     }
-    this.played += i;
-    if (this.started) {
-      const offset = currentFrame + frames - this.played;
-      if (offset !== this.offset && this.worker) {
-        this.offset = offset;
-        this.worker.postMessage({ offset });
+    if (s.started) {
+      const offset = currentFrame + frames - s.played;
+      if (offset !== s.offset) {
+        s.offset = offset;
+        s.port.postMessage({ offset });
       }
-      if (this.queued < this.low) this.low = this.queued;
-      this.adapt(underran);
     }
+    return short;
+  }
+
+  process(inputs, outputs) {
+    const out = outputs[0];
+    const frames = out[0].length;
+    let underran = false;
+    if (!this.streams.length) {
+      for (let c = 0; c < out.length; c++) out[c].fill(0);
+    }
+    for (let j = 0; j < this.streams.length; j++) {
+      if (this.mix(this.streams[j], out, frames, j === 0)) underran = true;
+    }
+    // Master gain and a peak limiter: fast attack, 50 ms release.
+    const ch = this.channels;
+    for (let k = 0; k < frames; k++) {
+      let p = 0;
+      for (let c = 0; c < ch; c++) {
+        out[c][k] *= this.gain;
+        const a = Math.abs(out[c][k]);
+        if (a > p) p = a;
+      }
+      this.env = p > this.env ? p : this.env * this.release;
+      if (p > this.peak) this.peak = p;
+      if (this.env > this.ceiling) {
+        const g = this.ceiling / this.env;
+        for (let c = 0; c < ch; c++) out[c][k] *= g;
+      }
+    }
+    if (underran) this.underruns++;
+    for (const s of this.streams) {
+      if (s.started && s.queued < this.windowLow) this.windowLow = s.queued;
+      if (s.started && s.queued < this.low) this.low = s.queued;
+    }
+    if (this.streams.some((s) => s.started)) this.adapt(underran);
     if (this.tap) this.record(out, frames);
-    this.ask();
+    for (const s of this.streams) this.ask(s);
     return true;
   }
 

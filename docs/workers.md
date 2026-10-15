@@ -51,6 +51,14 @@ startWorker({ ..., ports: { audio: audio.workerPort } });
 resumeOnGesture(audio.context);   // browsers start audio on the first click or key
 ```
 
+For more than one audio worker, each rendering part of the app on its own
+core, give each its own stream: `ports: { audio: audio.addStream() }`. The
+worklet sums the streams. A worker that's about to be busy for a while
+(building an instrument, say) can post `{pause: true}` on its audio port, and
+`{pause: false}` when it's done: the worklet plays its stream as silence
+meanwhile instead of counting dropouts. Keep the number of streams to what
+you need: each one is asked for audio every 2.7 ms.
+
 In the worker, `from js import ports` and hand `ports.audio` to
 `audiodev.worklet_audio` (pydevices): set `WorkletOutput(ports.audio).source`
 to a function that renders blocks, or use its `pcm_out(port=ports.audio)` like
@@ -70,6 +78,13 @@ In the worker, `midiports.webmidi.relay_ports(ports.midi)` gives
 `adafruit_midi.MIDI` its ports. Every input is relayed with its timestamp,
 and what you write goes to the page's outputs. Call `midi.port()` once per
 worker that should hear MIDI.
+
+## Talking to the page
+
+Things only the page can do, like the browser's file pickers, go through app
+messages. From Python, `js.self.postMessage({"type": "app", ...})` arrives in
+the page's `handle.onmessage`. The page answers with `handle.send({...})`,
+which Python receives by setting `js.self.onPageMessage` to a function.
 
 ## Serving it
 
