@@ -1,4 +1,4 @@
-# Python in Web Workers
+# Run your Python in Web Workers
 
 By default the template runs your Python on the page's main thread, which
 is simple and fine for most apps. When your app redraws a lot *and* has to
