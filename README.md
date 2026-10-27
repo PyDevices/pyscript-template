@@ -47,4 +47,4 @@ paint. The picture at the top of this page is that app after four strokes.
 
 [Docs](https://github.com/PyDevices/pyscript-template/blob/main/docs/index.md) · [Examples](https://pydevices.github.io/pydevices-examples/gallery/) · [Roadmap](ROADMAP.md)
 
-OmniPython is made by [PyDevices](https://pydevices.com).
+Made by [PyDevices](https://pydevices.com).
