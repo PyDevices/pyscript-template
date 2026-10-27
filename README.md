@@ -17,17 +17,18 @@ python3 -m http.server 8000
 ```
 
 Open <http://localhost:8000>. Here is a paint app in 20 lines; it is a cut-down
-`main.py`, which also sets the status line and a 500x500 display size:
+`main.py`, which also sets a 500x500 display size:
 
 ```python
 import board_config, appdev
+from pyscript import document
 display, app = board_config.display_drv, appdev.App(board_config)
 colors = [0xFFFF, 0xF800, 0x07E0, 0x001F, 0x07FF, 0xF81F, 0xFFE0, 0x0000]
 block, selected = display.width // len(colors), 0
 for i, color in enumerate(colors):
     display.fill_rect(i * block, 0, block, 30, color)
 display.show()
-
+document.querySelector("#status").textContent = "Pick a colour, then paint."
 def on_touch(event):
     global selected
     x, y = event.pos
@@ -36,7 +37,6 @@ def on_touch(event):
     else:
         display.fill_rect(x - 3, y - 3, 6, 6, colors[selected])
         display.show()
-
 app.on(app.events.MOUSEBUTTONDOWN, on_touch)
 app.on(app.events.MOUSEMOTION, on_touch)
 app.run()
@@ -47,4 +47,4 @@ paint. The picture at the top of this page is that app after four strokes.
 
 [Docs](https://github.com/PyDevices/pyscript-template/blob/main/docs/index.md) · [Examples](https://pydevices.github.io/pydevices-examples/gallery/) · [Roadmap](ROADMAP.md)
 
-Made by [PyDevices](https://pydevices.com).
+OmniPython is made by [PyDevices](https://pydevices.com).
