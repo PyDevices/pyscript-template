@@ -39,7 +39,7 @@ All of this lives at the repository root:
 | `pwa.js` | Registers the worker, sizes the app window, shows the install note |
 | `style.css` | The page in a tab, and the bare canvas in the app window |
 | `icon-192.png`, `icon-512.png` | App icons (the 512 is also the maskable one) |
-| `vendor/pyscript/` | The pinned PyScript release, made by `scripts/vendor_pyscript.sh` and `.gitignore`d |
+| `vendor/pyscript/` | The pinned PyScript release, made by [`scripts/vendor_pyscript.sh`](../../scripts/vendor_pyscript.sh) and `.gitignore`d |
 
 ### The manifest
 
