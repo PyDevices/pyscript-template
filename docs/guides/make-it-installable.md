@@ -1,4 +1,4 @@
-# Progressive Web App (PWA) Guide for PyScript
+# Make your app installable and offline
 
 This template is already an installable, offline-capable app. Your PyScript
 application can:
@@ -43,7 +43,7 @@ All of this lives at the repository root:
 
 ### The manifest
 
-[`manifest.json`](../manifest.json) tells the browser how the app appears
+[`manifest.json`](../../manifest.json) tells the browser how the app appears
 once installed. `display: "standalone"` gives it a window with no address bar,
 `theme_color` colours the title bar, `background_color` is the splash screen,
 and the two icons cover home screens and launchers. Change the names, colours
@@ -54,7 +54,7 @@ The manifest can't say how big the window should be; there is no such member.
 
 ### The service worker
 
-[`sw.js`](../sw.js) caches the shell (`SHELL`) when it installs, then serves
+[`sw.js`](../../sw.js) caches the shell (`SHELL`) when it installs, then serves
 every GET request from its cache first and caches anything new it fetches. On
 the first visit the page starts loading before the worker controls it, so
 `pwa.js` also hands the worker the URLs the page already loaded and the worker
@@ -92,20 +92,9 @@ Browsers decide whether a page may resize its window:
 
 In a tab, `pwa.js` never touches the window.
 
-## Run it locally
+## Serve it from localhost
 
-From the repository root:
-
-```bash
-./scripts/vendor_pyscript.sh
-python3 -m http.server 8000
-```
-
-Open <http://localhost:8000>. A service worker only runs on a secure origin:
-`http://localhost` counts, `https://` counts, and a file opened from disk or a
-LAN address like `http://192.168.1.20:8000` doesn't. On localhost Chrome and
-Edge show their install icon, so you can install the app and try its window
-from your own machine.
+[Run it locally](../get-started/index.md#run-it-locally) has the commands. A service worker only runs on a secure origin: `http://localhost` counts, `https://` counts, and a file opened from disk or a LAN address like `http://192.168.1.20:8000` doesn't. On localhost Chrome and Edge show their install icon, so you can install the app and try its window from your own machine.
 
 ### Edits that don't show
 

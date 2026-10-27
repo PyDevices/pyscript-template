@@ -9,7 +9,7 @@ worked examples.
 
 ## Use the pydevices wheel instead of the file list
 
-`audiodev` alone is fourteen files, so stop listing sources one by one.
+`audiodev` alone is a dozen or more files, so stop listing sources one by one.
 PyScript's `packages` takes wheel URLs, and the `pydevices` wheel carries the
 whole core (`displaydev`, `audiodev`, `appdev`, `events`, `keys`,
 `multimer`). Two files still come from the source tree: the browser board
