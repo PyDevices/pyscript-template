@@ -8,9 +8,9 @@ Web Workers and keep the page thin. `workers/` is a small kit for that:
 
 | File | Runs on | Does |
 |---|---|---|
-| `workers/host.js` | the page | starts workers, hands a canvas to one of them and relays its input, relays Web MIDI, owns the `AudioContext` |
-| `workers/python_worker.js` | each worker | loads Pyodide, installs your wheels, copies your files in, runs your module |
-| `workers/audio_worklet.js` | the audio thread | plays the audio a worker sends, with a queue that adapts to the machine |
+| [`workers/host.js`](../../workers/host.js) | the page | starts workers, hands a canvas to one of them and relays its input, relays Web MIDI, owns the `AudioContext` |
+| [`workers/python_worker.js`](../../workers/python_worker.js) | each worker | loads Pyodide, installs your wheels, copies your files in, runs your module |
+| [`workers/audio_worklet.js`](../../workers/audio_worklet.js) | the audio thread | plays the audio a worker sends, with a queue that adapts to the machine |
 
 ## A page that runs its app in a worker
 

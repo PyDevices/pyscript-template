@@ -15,16 +15,16 @@ The suite checks that the shell, service worker, manifest and `pyscript.json`
 agree: the JSON parses, every local file `index.html` and `sw.js` mention
 exists, the PyDevices source URLs are pinned to the release the test names, the
 page uses the Pyodide interpreter, and `pwa.js` leaves the browser's own install
-prompt alone. Two tests also run `tests/worklet_sim.mjs` under Node to check the
+prompt alone. Two tests also run [`tests/worklet_sim.mjs`](tests/worklet_sim.mjs) under Node to check the
 audio worklet's queue. It does not replace a real browser test of pointer
 input, installation or offline caching.
 
-Read `tests/test_template.py` before moving a shell file or adding a generated
+Read [`tests/test_template.py`](tests/test_template.py) before moving a shell file or adding a generated
 asset to the cache list.
 
 ## Update a pin
 
-- **PyScript.** Change `PYSCRIPT_VERSION` in `scripts/vendor_pyscript.sh`.
+- **PyScript.** Change `PYSCRIPT_VERSION` in [`scripts/vendor_pyscript.sh`](scripts/vendor_pyscript.sh).
   Check <https://pyscript.net/releases/> and confirm
   `https://pyscript.net/releases/<version>/offline_<version>.zip` returns 200
   before committing. Re-run `./scripts/vendor_pyscript.sh` and the tests.

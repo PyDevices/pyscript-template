@@ -11,5 +11,5 @@
 | `style.css` | Shell and canvas presentation. |
 | `icon-192.png`, `icon-512.png` | App icons. The 512 is also the maskable one. |
 | `workers/` | Optional kit for running Python in Web Workers: `host.js`, `python_worker.js`, `audio_worklet.js`. See [Run your Python in Web Workers](../guides/run-in-a-worker.md). |
-| `scripts/vendor_pyscript.sh` | Downloads the pinned offline PyScript release into generated `vendor/pyscript/`. Set `PYSCRIPT_VERSION` to override the pin for one run. |
+| [`scripts/vendor_pyscript.sh`](../../scripts/vendor_pyscript.sh) | Downloads the pinned offline PyScript release into generated `vendor/pyscript/`. Set `PYSCRIPT_VERSION` to override the pin for one run. |
 | `vendor/pyscript/` | Generated and ignored by Git. Never hand-edit it. |

@@ -19,7 +19,7 @@ Packages with C in them (`pydevices-audiodsp` for `synthio`,
 `pydevices-pygraphics`, `pydevices-lvgl`) publish a WebAssembly wheel on
 TestPyPI. Use the one tagged `cp314-cp314-pyemscripten_2026_0_wasm32`: that is
 the build for the Pyodide inside PyScript 2026.7.3, which
-`scripts/vendor_pyscript.sh` pins. If you change `PYSCRIPT_VERSION`, check the
+[`scripts/vendor_pyscript.sh`](../../scripts/vendor_pyscript.sh) pins. If you change `PYSCRIPT_VERSION`, check the
 new Pyodide's ABI (`vendor/pyscript/pyodide/pyodide-lock.json`, `info.abi_version`)
 and pick the wheel that matches.
 

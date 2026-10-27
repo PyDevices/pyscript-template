@@ -67,7 +67,7 @@ that is the target runtime.
   deliberate dependency change: update the complete file map and verify the
   copied application, rather than mixing versions casually.
 - `vendor/pyscript/` is generated and ignored by Git. Never hand-edit it;
-  change the pinned version in `scripts/vendor_pyscript.sh` and regenerate it.
+  change the pinned version in [`scripts/vendor_pyscript.sh`](../../scripts/vendor_pyscript.sh) and regenerate it.
 - The service worker serves cached files first. While developing, hard-reload
   (Ctrl+Shift+R) or tick DevTools' **Bypass for network** when a browser
   appears to serve an old file, and change `VERSION` in `sw.js` when you want
