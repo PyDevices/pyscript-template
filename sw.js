@@ -3,7 +3,7 @@
 // VERSION whenever you change a file: the next visit installs a worker with a
 // new cache and the old one is deleted. While you are editing, a hard reload
 // skips the worker instead (see docs/pwa-guide.md, "Edits that don't show").
-const VERSION = '1';
+const VERSION = '2';
 const CACHE_NAME = 'pyscript-template-' + VERSION;
 const SHELL = [
   './',
