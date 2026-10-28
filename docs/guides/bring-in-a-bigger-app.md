@@ -4,7 +4,7 @@ The starter `main.py` needs only the display core, so `pyscript.json` lists a
 handful of PyDevices source files. An app that makes sound, uses
 `pygraphics`, or is built on LVGL needs more than that. This page is how you
 give it more, using piano and the drum machine from
-[pydevices-examples](https://github.com/PyDevices/pydevices-examples) as the
+[gallery](https://github.com/PyDevices/gallery) as the
 worked examples.
 
 ## Use the pydevices wheel instead of the file list
