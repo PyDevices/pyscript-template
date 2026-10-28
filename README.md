@@ -45,6 +45,6 @@ app.run()
 Click a colour block along the top, then move the pointer over the canvas to
 paint. The picture at the top of this page is that app after four strokes.
 
-[Docs](https://github.com/PyDevices/pyscript-template/blob/main/docs/index.md) · [Examples](https://pydevices.github.io/pydevices-examples/gallery/) · [Roadmap](ROADMAP.md)
+[Docs](https://github.com/PyDevices/pyscript-template/blob/main/docs/index.md) · [Examples](https://pydevices.github.io/gallery/gallery/) · [Roadmap](ROADMAP.md)
 
 Made by [PyDevices](https://pydevices.com).
