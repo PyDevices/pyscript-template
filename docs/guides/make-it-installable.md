@@ -33,11 +33,11 @@ All of this lives at the repository root:
 
 | File | What it does |
 |---|---|
-| `index.html` | The page: canvas, status line, PyScript loader |
-| `manifest.json` | The app's name, icons, colours and `display: standalone` |
-| `sw.js` | The service worker that caches everything for offline use |
-| `pwa.js` | Registers the worker, sizes the app window, shows the install note |
-| `style.css` | The page in a tab, and the bare canvas in the app window |
+| [`index.html`](../../index.html) | The page: canvas, status line, PyScript loader |
+| [`manifest.json`](../../manifest.json) | The app's name, icons, colours and `display: standalone` |
+| [`sw.js`](../../sw.js) | The service worker that caches everything for offline use |
+| [`pwa.js`](../../pwa.js) | Registers the worker, sizes the app window, shows the install note |
+| [`style.css`](../../style.css) | The page in a tab, and the bare canvas in the app window |
 | `icon-192.png`, `icon-512.png` | App icons (the 512 is also the maskable one) |
 | `vendor/pyscript/` | The pinned PyScript release, made by [`scripts/vendor_pyscript.sh`](../../scripts/vendor_pyscript.sh) and `.gitignore`d |
 

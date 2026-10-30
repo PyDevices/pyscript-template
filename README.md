@@ -17,7 +17,7 @@ python3 -m http.server 8000
 ```
 
 Open <http://localhost:8000>. Here is a paint app in 20 lines; it is a cut-down
-`main.py`, which also sets a 500x500 display size:
+[`main.py`](main.py), which also sets a 500x500 display size:
 
 ```python
 import board_config, appdev
