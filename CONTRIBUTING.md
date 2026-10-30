@@ -11,10 +11,10 @@ anything larger than a fix.
 python3 -m unittest discover -s tests -v
 ```
 
-The suite checks that the shell, service worker, manifest and `pyscript.json`
-agree: the JSON parses, every local file `index.html` and `sw.js` mention
+The suite checks that the shell, service worker, manifest and [`pyscript.json`](pyscript.json)
+agree: the JSON parses, every local file [`index.html`](index.html) and [`sw.js`](sw.js) mention
 exists, the PyDevices source URLs are pinned to the release the test names, the
-page uses the Pyodide interpreter, and `pwa.js` leaves the browser's own install
+page uses the Pyodide interpreter, and [`pwa.js`](pwa.js) leaves the browser's own install
 prompt alone. Two tests also run [`tests/worklet_sim.mjs`](tests/worklet_sim.mjs) under Node to check the
 audio worklet's queue. It does not replace a real browser test of pointer
 input, installation or offline caching.
@@ -31,10 +31,10 @@ asset to the cache list.
   The wheel tag in [Bring in a bigger
   app](docs/guides/bring-in-a-bigger-app.md) depends on the Pyodide that
   release ships.
-- **PyDevices sources.** Every URL in `pyscript.json` names one PyDevices
+- **PyDevices sources.** Every URL in [`pyscript.json`](pyscript.json) names one PyDevices
   release. Change them together and update the release string in
   `tests/test_template.py`, then load the app in a browser.
-- **Cache.** Change `VERSION` in `sw.js` whenever you change a cached file, so
+- **Cache.** Change `VERSION` in [`sw.js`](sw.js) whenever you change a cached file, so
   browsers that already have the app pick the change up.
 
 ## Docs

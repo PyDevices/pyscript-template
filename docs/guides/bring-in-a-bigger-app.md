@@ -1,6 +1,6 @@
 # Bringing in a bigger app
 
-The starter `main.py` needs only the display core, so `pyscript.json` lists a
+The starter [`main.py`](../../main.py) needs only the display core, so [`pyscript.json`](../../pyscript.json) lists a
 handful of PyDevices source files. An app that makes sound, uses
 `pygraphics`, or is built on LVGL needs more than that. This page is how you
 give it more, using piano and the drum machine from
@@ -83,8 +83,8 @@ ordinary wheel works):
   drum machine 720×480); the canvas takes whatever size the display is. The
   template uses 500 because Chrome won't make an installed app's window any
   narrower.
-- **Name and icon.** `manifest.json` (`name`, `short_name`), the `<title>` and
-  heading in `index.html`, and the two icons.
+- **Name and icon.** [`manifest.json`](../../manifest.json) (`name`, `short_name`), the `<title>` and
+  heading in [`index.html`](../../index.html), and the two icons.
 - **Sound.** Browsers start audio only after a click or tap on the page, so
   the first note may need one.
 

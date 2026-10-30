@@ -3,7 +3,7 @@
 This repository is a GitHub template for an installable browser application,
 not a shared PyDevices library. Start by using the template to create your own
 repository, then make that repository's
-`main.py`, application name, icons, and styling yours.
+[`main.py`](../../main.py), application name, icons, and styling yours.
 
 The template runs Python in the browser through PyScript/Pyodide and renders
 through the PyDevices display stack on an HTML canvas. Its included paint demo
@@ -35,7 +35,7 @@ main.py
 sw.js caches the shell and later GET responses for offline reuse
 ```
 
-The application must be served over HTTP. Opening `index.html` directly
+The application must be served over HTTP. Opening [`index.html`](../../index.html) directly
 from the filesystem does not provide the origin that PyScript needs, and the
 service worker only runs on `http://localhost` or `https://`. The root
 [Run it locally](../get-started/index.md#run-it-locally) has the commands. The files, one by one, are in [Files in the template](../reference/files.md).
@@ -44,7 +44,7 @@ service worker only runs on `http://localhost` or `https://`. The root
 
 1. The browser loads `index.html`, which loads the vendored PyScript runtime
    and asks it to run `main.py` with `pyscript.json`.
-2. PyScript fetches the PyDevices files listed in `pyscript.json`. They are
+2. PyScript fetches the PyDevices files listed in [`pyscript.json`](../../pyscript.json). They are
    intentionally pinned to one `PyDevices/pydevices` release, so a fresh app
    does not change when the upstream default branch moves.
 3. `main.py` imports the pinned `board_config` and `appdev` modules.
@@ -52,7 +52,7 @@ service worker only runs on `http://localhost` or `https://`. The root
    `appdev.App(board_config)` supplies event dispatch and refresh coordination.
 4. The demo draws its colour strip, converts pointer events into a selected
    colour or paint stroke, and calls `display_drv.show()` to present updates.
-5. `pwa.js` registers `sw.js`. After an initial online visit, the cached
+5. [`pwa.js`](../../pwa.js) registers [`sw.js`](../../sw.js). After an initial online visit, the cached
    shell, runtime and fetched assets enable offline launches. The cache is
    named after `VERSION` in `sw.js`; changing it replaces the old cache.
 
