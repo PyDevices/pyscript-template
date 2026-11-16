@@ -1,7 +1,7 @@
 {
-  "name": "My PyDevices App",
-  "short_name": "PyDevices App",
-  "description": "A cross-platform Python display application built with PyDevices and PyScript.",
+  "name": "My OmniPython App",
+  "short_name": "OmniPython App",
+  "description": "A cross-platform Python display application built with OmniPython and PyScript.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

@@ -3,7 +3,7 @@
 # PyScript template
 
 PyScript template is a starter for an installable browser app that draws with
-the PyDevices display stack: Python (Pyodide) on a canvas, working offline once
+the OmniPython display stack: Python (Pyodide) on a canvas, working offline once
 it has loaded.
 
 On GitHub, press **Use this template**, or clone it, then serve it from
