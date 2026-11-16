@@ -1,12 +1,12 @@
 # How the template works
 
 This repository is a GitHub template for an installable browser application,
-not a shared PyDevices library. Start by using the template to create your own
+not a shared OmniPython library. Start by using the template to create your own
 repository, then make that repository's
 [`main.py`](../../main.py), application name, icons, and styling yours.
 
 The template runs Python in the browser through PyScript/Pyodide and renders
-through the PyDevices display stack on an HTML canvas. Its included paint demo
+through the OmniPython display stack on an HTML canvas. Its included paint demo
 is deliberately small: it demonstrates the Board Contract (`board_config` and
 `appdev.App`), browser pointer events, and a display surface without imposing
 an application architecture on the copied project.
@@ -23,7 +23,7 @@ index.html
   `-- registers pwa.js
         |
         v
-PyScript fetches pinned PyDevices Python modules
+PyScript fetches pinned OmniPython Python modules
         |
         v
 main.py
@@ -44,8 +44,8 @@ service worker only runs on `http://localhost` or `https://`. The root
 
 1. The browser loads `index.html`, which loads the vendored PyScript runtime
    and asks it to run `main.py` with `pyscript.json`.
-2. PyScript fetches the PyDevices files listed in [`pyscript.json`](../../pyscript.json). They are
-   intentionally pinned to one `PyDevices/pydevices` release, so a fresh app
+2. PyScript fetches the OmniPython files listed in [`pyscript.json`](../../pyscript.json). They are
+   intentionally pinned to one `PyDevices/omnipython` release, so a fresh app
    does not change when the upstream default branch moves.
 3. `main.py` imports the pinned `board_config` and `appdev` modules.
    `board_config.display_drv` binds the PyScript display backend to the canvas;
@@ -63,7 +63,7 @@ that is the target runtime.
 ## Boundaries worth preserving
 
 - Change the copied application's `main.py`, titles, icons, manifest, and CSS.
-- Keep `pyscript.json` source URLs pinned. Updating the PyDevices release is a
+- Keep `pyscript.json` source URLs pinned. Updating the OmniPython release is a
   deliberate dependency change: update the complete file map and verify the
   copied application, rather than mixing versions casually.
 - `vendor/pyscript/` is generated and ignored by Git. Never hand-edit it;
@@ -85,5 +85,5 @@ that is the target runtime.
   boundary and pinned dependency set.
 - Read [Make your app installable and offline](../guides/make-it-installable.md) before changing service-worker behavior,
   caching, the app window, or installation instructions.
-- For display/event APIs, follow the linked PyDevices source release rather
+- For display/event APIs, follow the linked OmniPython source release rather
   than copying its implementation into this template.

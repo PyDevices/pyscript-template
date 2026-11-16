@@ -1,22 +1,22 @@
 # Bringing in a bigger app
 
 The starter [`main.py`](../../main.py) needs only the display core, so [`pyscript.json`](../../pyscript.json) lists a
-handful of PyDevices source files. An app that makes sound, uses
+handful of OmniPython source files. An app that makes sound, uses
 `pygraphics`, or is built on LVGL needs more than that. This page is how you
 give it more, using piano and the drum machine from
 [gallery](https://github.com/PyDevices/gallery) as the
 worked examples.
 
-## Use the pydevices wheel instead of the file list
+## Use the omnipython wheel instead of the file list
 
 `audiodev` alone is a dozen or more files, so stop listing sources one by one.
-PyScript's `packages` takes wheel URLs, and the `pydevices` wheel carries the
+PyScript's `packages` takes wheel URLs, and the `omnipython` wheel carries the
 whole core (`displaydev`, `audiodev`, `appdev`, `events`, `keys`,
 `multimer`). Two files still come from the source tree: the browser board
 package, `board_config.py` and `board_peripherals.py`.
 
-Packages with C in them (`pydevices-audiodsp` for `synthio`,
-`pydevices-pygraphics`, `pydevices-lvgl`) publish a WebAssembly wheel on
+Packages with C in them (`omnipython-audiodsp` for `synthio`,
+`omnipython-pygraphics`, `omnipython-lvgl`) publish a WebAssembly wheel on
 TestPyPI. Use the one tagged `cp314-cp314-pyemscripten_2026_0_wasm32`: that is
 the build for the Pyodide inside PyScript 2026.7.3, which
 [`scripts/vendor_pyscript.sh`](../../scripts/vendor_pyscript.sh) pins. If you change `PYSCRIPT_VERSION`, check the
@@ -24,7 +24,7 @@ new Pyodide's ABI (`vendor/pyscript/pyodide/pyodide-lock.json`, `info.abi_versio
 and pick the wheel that matches.
 
 To find a wheel's URL, open the project's **Download files** page on TestPyPI
-(for example <https://test.pypi.org/project/pydevices-audiodsp/#files>), or
+(for example <https://test.pypi.org/project/omnipython-audiodsp/#files>), or
 ask the JSON API:
 
 ```bash
@@ -44,8 +44,8 @@ Copy `lib/examples/piano.py` over `main.py`. Its `pyscript.json`:
     "https://test-files.pythonhosted.org/packages/84/a9/7ad7a06ce103b51dded56f671254a9f1075ee140b80da2bce8e29f5a4ebf/pydevices_pygraphics-0.0.39-cp314-cp314-pyemscripten_2026_0_wasm32.whl"
   ],
   "files": {
-    "https://raw.githubusercontent.com/PyDevices/pydevices/v0.5.2/board_configs/psdisplay/board_config.py": "./board_config.py",
-    "https://raw.githubusercontent.com/PyDevices/pydevices/v0.5.2/board_configs/psdisplay/board_peripherals.py": "./board_peripherals.py"
+    "https://raw.githubusercontent.com/PyDevices/omnipython/v0.5.2/board_configs/psdisplay/board_config.py": "./board_config.py",
+    "https://raw.githubusercontent.com/PyDevices/omnipython/v0.5.2/board_configs/psdisplay/board_peripherals.py": "./board_peripherals.py"
   }
 }
 ```
@@ -67,8 +67,8 @@ ordinary wheel works):
     "https://test-files.pythonhosted.org/packages/3b/d9/f994c6a9bcb6b7ff67be8afcc62cdda3fb52fab0eb7e3081bf6c9465f2a3/pydevices_audioinstruments-0.3.1-py3-none-any.whl"
   ],
   "files": {
-    "https://raw.githubusercontent.com/PyDevices/pydevices/v0.5.2/board_configs/psdisplay/board_config.py": "./board_config.py",
-    "https://raw.githubusercontent.com/PyDevices/pydevices/v0.5.2/board_configs/psdisplay/board_peripherals.py": "./board_peripherals.py",
+    "https://raw.githubusercontent.com/PyDevices/omnipython/v0.5.2/board_configs/psdisplay/board_config.py": "./board_config.py",
+    "https://raw.githubusercontent.com/PyDevices/omnipython/v0.5.2/board_configs/psdisplay/board_peripherals.py": "./board_peripherals.py",
     "./drum_seq/__init__.py": "./drum_seq/__init__.py",
     "./drum_seq/panel.py": "./drum_seq/panel.py"
   }
@@ -78,7 +78,7 @@ ordinary wheel works):
 ## Things you will want to change
 
 - **Canvas size.** The template's `main.py` sets the display to 500×500
-  with `env_set("PYDEVICES_WIDTH", ...)` and `PYDEVICES_HEIGHT` before it
+  with `env_set("OMNIPYTHON_WIDTH", ...)` and `OMNIPYTHON_HEIGHT` before it
   imports `board_config`. Set them to your app's size (piano is 480×320, the
   drum machine 720×480); the canvas takes whatever size the display is. The
   template uses 500 because Chrome won't make an installed app's window any

@@ -2,9 +2,9 @@
 #
 # SPDX-License-Identifier: MIT
 
-"""Application entry point for the PyDevices PyScript template.
+"""Application entry point for the OmniPython PyScript template.
 
-Interactive touch/paint demo built on the PyDevices Board Contract
+Interactive touch/paint demo built on the OmniPython Board Contract
 (``board_config`` and ``appdev.App``). Edit this file to make the app yours.
 """
 
@@ -12,8 +12,8 @@ from boarddev import env_set
 
 # The display is 500x500: Chrome won't make an installed app's window narrower
 # than about 500 pixels, so this size fills it. board_config reads these.
-env_set("PYDEVICES_WIDTH", 500)
-env_set("PYDEVICES_HEIGHT", 500)
+env_set("OMNIPYTHON_WIDTH", 500)
+env_set("OMNIPYTHON_HEIGHT", 500)
 
 import board_config
 import appdev

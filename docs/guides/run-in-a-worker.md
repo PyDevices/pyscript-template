@@ -22,7 +22,7 @@ Web Workers and keep the page thin. `workers/` is a small kit for that:
   canvas.width = 800; canvas.height = 480;
   startWorker({
     name: "app", main: "main", canvas,
-    packages: ["vendor/wheels/pydevices-<version>-py3-none-any.whl"],
+    packages: ["vendor/wheels/omnipython-<version>-py3-none-any.whl"],
     files: { "main.py": "main.py" },
   });
 </script>
@@ -32,7 +32,7 @@ In `main.py`, use the worker board config and everything else works as on
 the page, including LVGL's `display_driver`:
 
 ```python
-import board_config   # pydevices' board_configs/workerdisplay, copied in as board_config.py
+import board_config   # omnipython's board_configs/workerdisplay, copied in as board_config.py
 import appdev
 app = appdev.App(board_config)
 ```
@@ -60,7 +60,7 @@ meanwhile instead of counting dropouts. Keep the number of streams to what
 you need: each one is asked for audio every 2.7 ms.
 
 In the worker, `from js import ports` and hand `ports.audio` to
-`audiodev.worklet_audio` (pydevices): set `WorkletOutput(ports.audio).source`
+`audiodev.worklet_audio` (omnipython): set `WorkletOutput(ports.audio).source`
 to a function that renders blocks, or use its `pcm_out(port=ports.audio)` like
 any other audio output. The worklet keeps about 32 ms queued at first and
 works down to about 16 ms when the machine keeps up. After a dropout it

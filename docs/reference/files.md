@@ -4,7 +4,7 @@
 |---|---|
 | [`index.html`](../../index.html) | Application shell: canvas, status text, PyScript loader, and the Python entrypoint declaration. |
 | [`main.py`](../../main.py) | Starter Python application. It constructs `appdev.App(board_config)`, paints the demo, and handles pointer events. |
-| [`pyscript.json`](../../pyscript.json) | Exact remote-file map for the PyDevices modules available to PyScript. |
+| [`pyscript.json`](../../pyscript.json) | Exact remote-file map for the OmniPython modules available to PyScript. |
 | [`manifest.json`](../../manifest.json) | Browser PWA identity: names, icons, scope, and display mode. |
 | [`pwa.js`](../../pwa.js) | Registers the service worker, sizes an installed app's window to the display, and shows the note that says how to install. |
 | [`sw.js`](../../sw.js) | Caches the app shell and runtime, then caches successful GET responses for offline reuse. The cache is named after `VERSION` in this file. |

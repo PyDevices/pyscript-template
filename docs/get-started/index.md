@@ -41,7 +41,7 @@ show](../guides/make-it-installable.md#edits-that-dont-show) has the rest.
 1. Edit `main.py` to replace the paint demo with your application.
 2. Rename the app in [`index.html`](../../index.html) and [`manifest.json`](../../manifest.json), replace the two icons
    and adjust `style.css`.
-3. Add only the PyDevices source files or Pyodide packages the app needs to
+3. Add only the OmniPython source files or Pyodide packages the app needs to
    [`pyscript.json`](../../pyscript.json). For an app that makes sound or uses LVGL, see
    [Bring in a bigger app](../guides/bring-in-a-bigger-app.md).
 4. Install it from Chrome or Edge on localhost, check that its window fits the
