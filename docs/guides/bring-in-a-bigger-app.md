@@ -17,18 +17,18 @@ package, `board_config.py` and `board_peripherals.py`.
 
 Packages with C in them (`omnipython-audiodsp` for `synthio`,
 `omnipython-pygraphics`, `omnipython-lvgl`) publish a WebAssembly wheel on
-TestPyPI. Use the one tagged `cp314-cp314-pyemscripten_2026_0_wasm32`: that is
+PyPI. Use the one tagged `cp314-cp314-pyemscripten_2026_0_wasm32`: that is
 the build for the Pyodide inside PyScript 2026.7.3, which
 [`scripts/vendor_pyscript.sh`](../../scripts/vendor_pyscript.sh) pins. If you change `PYSCRIPT_VERSION`, check the
 new Pyodide's ABI (`vendor/pyscript/pyodide/pyodide-lock.json`, `info.abi_version`)
 and pick the wheel that matches.
 
-To find a wheel's URL, open the project's **Download files** page on TestPyPI
-(for example <https://test.pypi.org/project/omnipython-audiodsp/#files>), or
+To find a wheel's URL, open the project's **Download files** page on PyPI
+(for example <https://pypi.org/project/omnipython-audiodsp/#files>), or
 ask the JSON API:
 
 ```bash
-curl -s https://test.pypi.org/pypi/omnipython-audiodsp/0.6.16.dev4/json |
+curl -s https://pypi.org/pypi/omnipython-audiodsp/0.6.16/json |
   python3 -c "import json,sys; [print(u['url']) for u in json.load(sys.stdin)['urls'] if 'pyemscripten_2026' in u['filename']]"
 ```
 
@@ -39,13 +39,13 @@ Copy gallery's `lib/examples/piano.py` over `main.py`. Its `pyscript.json`:
 ```json
 {
   "packages": [
-    "https://test-files.pythonhosted.org/packages/32/88/70a5800044046b6524c1861bba2426b623fcd4c62cb72149c127aed0cbd7/omnipython-0.8.0.dev24-py3-none-any.whl",
-    "https://test-files.pythonhosted.org/packages/10/49/aad85c058839ac988315a289947a6ad313e9e262aa8afc65b3d07b6efac6/omnipython_audiodsp-0.6.16.dev4-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
-    "https://test-files.pythonhosted.org/packages/e4/5c/47a5dc1c7f4213b31c31fcd510a37f102c7e8290174416d3947917c0f1f2/omnipython_pygraphics-0.1.7.dev2-cp314-cp314-pyemscripten_2026_0_wasm32.whl"
+    "https://files.pythonhosted.org/packages/c7/12/b54d393645f889b78095288ed0573d38cd65cb0e82acec0e05a45c20f8d7/omnipython-0.8.0-py3-none-any.whl",
+    "https://files.pythonhosted.org/packages/01/0e/4944aa2baf98d342439ccdf9c7b929be06470b9245dac8252ab95a9fa6e1/omnipython_audiodsp-0.6.16-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+    "https://files.pythonhosted.org/packages/be/52/e1ea5f109496c147ffdf085c002adadf1714c5c7fe499d918731f9cd7940/omnipython_pygraphics-0.2.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl"
   ],
   "files": {
-    "https://raw.githubusercontent.com/PyDevices/omnipython/v0.8.0.dev24/board_configs/psdisplay/board_config.py": "./board_config.py",
-    "https://raw.githubusercontent.com/PyDevices/omnipython/v0.8.0.dev24/board_configs/psdisplay/board_peripherals.py": "./board_peripherals.py"
+    "https://raw.githubusercontent.com/PyDevices/omnipython/v0.8.0/board_configs/psdisplay/board_config.py": "./board_config.py",
+    "https://raw.githubusercontent.com/PyDevices/omnipython/v0.8.0/board_configs/psdisplay/board_peripherals.py": "./board_peripherals.py"
   }
 }
 ```
@@ -60,14 +60,14 @@ that `audioinstruments` carries:
 ```json
 {
   "packages": [
-    "https://test-files.pythonhosted.org/packages/32/88/70a5800044046b6524c1861bba2426b623fcd4c62cb72149c127aed0cbd7/omnipython-0.8.0.dev24-py3-none-any.whl",
-    "https://test-files.pythonhosted.org/packages/10/49/aad85c058839ac988315a289947a6ad313e9e262aa8afc65b3d07b6efac6/omnipython_audiodsp-0.6.16.dev4-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
-    "https://test-files.pythonhosted.org/packages/81/35/7e6eb12cd4f4f2b4767c8b1a0e370e6631246608958941934e303b3c0e68/omnipython_lvgl-9.6.1.dev0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
-    "https://test-files.pythonhosted.org/packages/30/2b/84b401ecbc2a50328b79fc4a556117d8e3f8f8eb768b30dda51c5772fbd4/omnipython_audioinstruments-0.5.2.dev6-py3-none-any.whl"
+    "https://files.pythonhosted.org/packages/c7/12/b54d393645f889b78095288ed0573d38cd65cb0e82acec0e05a45c20f8d7/omnipython-0.8.0-py3-none-any.whl",
+    "https://files.pythonhosted.org/packages/01/0e/4944aa2baf98d342439ccdf9c7b929be06470b9245dac8252ab95a9fa6e1/omnipython_audiodsp-0.6.16-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+    "https://files.pythonhosted.org/packages/25/49/e01aecca58986cded3292a42381f65b0e48e9365cccc70fd77648f5c63c7/omnipython_lvgl-9.6.1-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+    "https://files.pythonhosted.org/packages/ef/4d/58321b39f5bf6fa53ddb31cd6dff1b44491beaf82055198b94ab5556122a/omnipython_audioinstruments-0.5.2-py3-none-any.whl"
   ],
   "files": {
-    "https://raw.githubusercontent.com/PyDevices/omnipython/v0.8.0.dev24/board_configs/psdisplay/board_config.py": "./board_config.py",
-    "https://raw.githubusercontent.com/PyDevices/omnipython/v0.8.0.dev24/board_configs/psdisplay/board_peripherals.py": "./board_peripherals.py"
+    "https://raw.githubusercontent.com/PyDevices/omnipython/v0.8.0/board_configs/psdisplay/board_config.py": "./board_config.py",
+    "https://raw.githubusercontent.com/PyDevices/omnipython/v0.8.0/board_configs/psdisplay/board_peripherals.py": "./board_peripherals.py"
   }
 }
 ```
