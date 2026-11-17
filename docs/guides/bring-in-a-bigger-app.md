@@ -28,49 +28,46 @@ To find a wheel's URL, open the project's **Download files** page on TestPyPI
 ask the JSON API:
 
 ```bash
-curl -s https://test.pypi.org/pypi/pydevices-audiodsp/0.6.0/json |
+curl -s https://test.pypi.org/pypi/omnipython-audiodsp/0.6.16.dev4/json |
   python3 -c "import json,sys; [print(u['url']) for u in json.load(sys.stdin)['urls'] if 'pyemscripten_2026' in u['filename']]"
 ```
 
 ## Piano
 
-Copy `lib/examples/piano.py` over `main.py`. Its `pyscript.json`:
+Copy gallery's `lib/examples/piano.py` over `main.py`. Its `pyscript.json`:
 
 ```json
 {
   "packages": [
-    "https://test-files.pythonhosted.org/packages/db/7d/8cae60d7482373307813bcf7f3c74f1dd8ff8e41589e3fb1c4e29cfa258e/pydevices-0.5.2-py3-none-any.whl",
-    "https://test-files.pythonhosted.org/packages/0a/c7/d1ca995d58cb486abca7350c9c5a3a7625a25df932d77e9cfe74d6fcffde/pydevices_audiodsp-0.6.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
-    "https://test-files.pythonhosted.org/packages/84/a9/7ad7a06ce103b51dded56f671254a9f1075ee140b80da2bce8e29f5a4ebf/pydevices_pygraphics-0.0.39-cp314-cp314-pyemscripten_2026_0_wasm32.whl"
+    "https://test-files.pythonhosted.org/packages/32/88/70a5800044046b6524c1861bba2426b623fcd4c62cb72149c127aed0cbd7/omnipython-0.8.0.dev24-py3-none-any.whl",
+    "https://test-files.pythonhosted.org/packages/10/49/aad85c058839ac988315a289947a6ad313e9e262aa8afc65b3d07b6efac6/omnipython_audiodsp-0.6.16.dev4-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+    "https://test-files.pythonhosted.org/packages/e4/5c/47a5dc1c7f4213b31c31fcd510a37f102c7e8290174416d3947917c0f1f2/omnipython_pygraphics-0.1.7.dev2-cp314-cp314-pyemscripten_2026_0_wasm32.whl"
   ],
   "files": {
-    "https://raw.githubusercontent.com/PyDevices/omnipython/v0.5.2/board_configs/psdisplay/board_config.py": "./board_config.py",
-    "https://raw.githubusercontent.com/PyDevices/omnipython/v0.5.2/board_configs/psdisplay/board_peripherals.py": "./board_peripherals.py"
+    "https://raw.githubusercontent.com/PyDevices/omnipython/v0.8.0.dev24/board_configs/psdisplay/board_config.py": "./board_config.py",
+    "https://raw.githubusercontent.com/PyDevices/omnipython/v0.8.0.dev24/board_configs/psdisplay/board_peripherals.py": "./board_peripherals.py"
   }
 }
 ```
 
 ## Drum machine
 
-The drum machine is two packages: the app in `lib/examples/drum_machine/` and
-its instrument panel in `lib/examples/drum_seq/`. Copy
-`drum_machine/drum_machine.py` over `main.py` and copy the `drum_seq/` folder
-next to it. It also needs LVGL and `audioinstruments` (pure Python, so its
-ordinary wheel works):
+The drum machine is one file, gallery's `lib/examples/drum_machine/drum_machine.py`.
+Copy it over `main.py`. It also needs LVGL and `audioinstruments` (pure Python,
+so its ordinary wheel works), and its PANEL button opens the instrument panel
+that `audioinstruments` carries:
 
 ```json
 {
   "packages": [
-    "https://test-files.pythonhosted.org/packages/db/7d/8cae60d7482373307813bcf7f3c74f1dd8ff8e41589e3fb1c4e29cfa258e/pydevices-0.5.2-py3-none-any.whl",
-    "https://test-files.pythonhosted.org/packages/0a/c7/d1ca995d58cb486abca7350c9c5a3a7625a25df932d77e9cfe74d6fcffde/pydevices_audiodsp-0.6.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
-    "https://test-files.pythonhosted.org/packages/d1/86/cd7720dd24b3da3c9083b57b1bd7e12959d49ec951c6796eeeb287c7da80/pydevices_lvgl-9.5.45-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
-    "https://test-files.pythonhosted.org/packages/3b/d9/f994c6a9bcb6b7ff67be8afcc62cdda3fb52fab0eb7e3081bf6c9465f2a3/pydevices_audioinstruments-0.3.1-py3-none-any.whl"
+    "https://test-files.pythonhosted.org/packages/32/88/70a5800044046b6524c1861bba2426b623fcd4c62cb72149c127aed0cbd7/omnipython-0.8.0.dev24-py3-none-any.whl",
+    "https://test-files.pythonhosted.org/packages/10/49/aad85c058839ac988315a289947a6ad313e9e262aa8afc65b3d07b6efac6/omnipython_audiodsp-0.6.16.dev4-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+    "https://test-files.pythonhosted.org/packages/81/35/7e6eb12cd4f4f2b4767c8b1a0e370e6631246608958941934e303b3c0e68/omnipython_lvgl-9.6.1.dev0-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+    "https://test-files.pythonhosted.org/packages/30/2b/84b401ecbc2a50328b79fc4a556117d8e3f8f8eb768b30dda51c5772fbd4/omnipython_audioinstruments-0.5.2.dev6-py3-none-any.whl"
   ],
   "files": {
-    "https://raw.githubusercontent.com/PyDevices/omnipython/v0.5.2/board_configs/psdisplay/board_config.py": "./board_config.py",
-    "https://raw.githubusercontent.com/PyDevices/omnipython/v0.5.2/board_configs/psdisplay/board_peripherals.py": "./board_peripherals.py",
-    "./drum_seq/__init__.py": "./drum_seq/__init__.py",
-    "./drum_seq/panel.py": "./drum_seq/panel.py"
+    "https://raw.githubusercontent.com/PyDevices/omnipython/v0.8.0.dev24/board_configs/psdisplay/board_config.py": "./board_config.py",
+    "https://raw.githubusercontent.com/PyDevices/omnipython/v0.8.0.dev24/board_configs/psdisplay/board_peripherals.py": "./board_peripherals.py"
   }
 }
 ```
