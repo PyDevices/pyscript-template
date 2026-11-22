@@ -3,7 +3,7 @@
 // VERSION whenever you change a file: the next visit installs a worker with a
 // new cache and the old one is deleted. While you are editing, a hard reload
 // skips the worker instead (see docs/guides/make-it-installable.md, "Edits that don't show").
-const VERSION = '2';
+const VERSION = '3';
 const CACHE_NAME = 'pyscript-template-' + VERSION;
 const SHELL = [
   './',
